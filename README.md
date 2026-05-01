@@ -9,7 +9,7 @@ Fullstack monorepo for a time-tracking demo project.
 ## Repository Structure
 
 - `app`, `routes`, `database`, `config`, ...: Laravel backend.
-- `timetjek-frontend/`: standalone Vue frontend app.
+- `tidspuls-frontend/`: standalone Vue frontend app.
 - `.github/workflows/ci.yml`: CI for tests, formatting, static analysis.
 - `DEPLOYMENT.md`: Netlify + Render deployment guide.
 
@@ -34,7 +34,7 @@ Fullstack monorepo for a time-tracking demo project.
 
 ### Frontend (Vue)
 
-1. Go to frontend folder: `cd timetjek-frontend`
+1. Go to frontend folder: `cd tidspuls-frontend`
 2. Install dependencies: `npm install`
 3. Set env var `VITE_API_BASE_URL=http://localhost:8001/api/v1`
 4. Start dev server: `npm run dev`
@@ -44,7 +44,7 @@ Fullstack monorepo for a time-tracking demo project.
 - Backend tests: `php artisan test`
 - Backend format check: `vendor/bin/pint --test`
 - Backend static analysis: `vendor/bin/phpstan analyse`
-- Frontend build/typecheck: `cd timetjek-frontend && npm run build`
+- Frontend build/typecheck: `cd tidspuls-frontend && npm run build`
 
 ## Deployment
 

@@ -3,7 +3,7 @@
 .env
 .env.*
 node_modules
-timetjek-frontend/node_modules
+tidspuls-frontend/node_modules
 vendor
 storage/logs
 storage/framework/cache

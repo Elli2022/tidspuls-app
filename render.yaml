@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: timetjek-backend
+    name: tidspuls-backend
     env: php
     plan: free
     rootDir: .
@@ -13,7 +13,7 @@ services:
     healthCheckPath: /up
     envVars:
       - key: APP_NAME
-        value: Timetjek
+        value: Tidspuls
       - key: APP_ENV
         value: production
       - key: APP_DEBUG

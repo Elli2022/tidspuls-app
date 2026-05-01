@@ -2,7 +2,7 @@
 
 ## Architecture
 
-- Frontend (`timetjek-frontend`) deploys on Netlify.
+- Frontend (`tidspuls-frontend`) deploys on Netlify.
 - Backend (Laravel API) deploys on Render.
 - Database: MySQL/MariaDB (Render MySQL-compatible provider or external managed DB).
 
