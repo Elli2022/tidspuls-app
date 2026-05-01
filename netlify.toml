@@ -6,7 +6,7 @@
 [build.environment]
   NODE_VERSION = "20"
   # Production API (override in Netlify Site settings → Environment variables per branch/context if needed)
-  VITE_API_BASE_URL = "https://tidspuls-backend.onrender.com/api/v1"
+  VITE_API_BASE_URL = "https://tidspuls-app.onrender.com/api/v1"
 
 [[redirects]]
   from = "/*"
