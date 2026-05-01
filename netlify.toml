@@ -1,0 +1,14 @@
+[build]
+  base = "."
+  command = "npm --prefix timetjek-frontend ci && npm --prefix timetjek-frontend run build"
+  publish = "timetjek-frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Production API (override in Netlify Site settings → Environment variables per branch/context if needed)
+  VITE_API_BASE_URL = "https://timetjek-backend.onrender.com/api/v1"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
