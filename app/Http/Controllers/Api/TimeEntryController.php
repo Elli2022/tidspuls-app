@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ClockActionRequest;
 use App\Http\Requests\Api\StoreTimeEntryRequest;
 use App\Http\Requests\Api\UpdateTimeEntryRequest;
+use App\Models\LocationLog;
 use App\Models\TimeEntry;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -99,6 +100,16 @@ class TimeEntryController extends Controller
             'clock_in_longitude' => $payload['longitude'] ?? null,
         ]);
 
+        if (($payload['latitude'] ?? null) !== null && ($payload['longitude'] ?? null) !== null) {
+            LocationLog::recordForUser(
+                $request->user(),
+                (float) $payload['latitude'],
+                (float) $payload['longitude'],
+                isset($payload['accuracy']) ? (float) $payload['accuracy'] : null,
+                LocationLog::SOURCE_CLOCK_IN,
+            );
+        }
+
         return $this->successResponse([
             'time_entry' => $entry,
         ], 201);
@@ -126,6 +137,16 @@ class TimeEntryController extends Controller
             'clock_out_latitude' => $payload['latitude'] ?? null,
             'clock_out_longitude' => $payload['longitude'] ?? null,
         ]);
+
+        if (($payload['latitude'] ?? null) !== null && ($payload['longitude'] ?? null) !== null) {
+            LocationLog::recordForUser(
+                $request->user(),
+                (float) $payload['latitude'],
+                (float) $payload['longitude'],
+                isset($payload['accuracy']) ? (float) $payload['accuracy'] : null,
+                LocationLog::SOURCE_CLOCK_OUT,
+            );
+        }
 
         return $this->successResponse([
             'time_entry' => $entry->fresh(),

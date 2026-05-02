@@ -34,4 +34,9 @@ class User extends Authenticatable implements MustVerifyEmailContract
     {
         return $this->hasMany(TimeEntry::class);
     }
+
+    public function locationLogs(): HasMany
+    {
+        return $this->hasMany(LocationLog::class);
+    }
 }

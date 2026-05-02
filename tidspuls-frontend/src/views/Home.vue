@@ -111,14 +111,19 @@ const withGps = async () => {
         return {};
     }
 
-    return new Promise<{ latitude?: number; longitude?: number }>((resolve) => {
+    return new Promise<{ latitude?: number; longitude?: number; accuracy?: number }>((resolve) => {
         navigator.geolocation.getCurrentPosition(
-            (position) => resolve({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-            }),
+            (position) =>
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy:
+                        position.coords.accuracy != null && Number.isFinite(position.coords.accuracy)
+                            ? position.coords.accuracy
+                            : undefined,
+                }),
             () => resolve({}),
-            { timeout: 4000 }
+            { timeout: 8000, enableHighAccuracy: true },
         );
     });
 };
@@ -135,7 +140,11 @@ const clockIn = async () => {
 
     try {
         const coords = await withGps();
-        await apiClient.post('/time-entries/clock-in', coords);
+        await apiClient.post('/time-entries/clock-in', {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            accuracy: coords.accuracy,
+        });
         await loadEntries();
         message.value =
             coords.latitude != null && coords.longitude != null
@@ -155,7 +164,11 @@ const clockOut = async () => {
 
     try {
         const coords = await withGps();
-        await apiClient.post('/time-entries/clock-out', coords);
+        await apiClient.post('/time-entries/clock-out', {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            accuracy: coords.accuracy,
+        });
         await loadEntries();
         message.value =
             coords.latitude != null && coords.longitude != null

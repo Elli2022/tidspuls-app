@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\LocationLogController;
 use App\Http\Controllers\Api\TimeEntryController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -22,6 +23,9 @@ Route::prefix('v1')->group(function () {
         ]));
         Route::post('/logout', [AuthenticatedSessionController::class, 'apiLogout']);
         Route::post('/change-password', [UserController::class, 'changePassword']);
+
+        Route::get('/location-logs', [LocationLogController::class, 'index']);
+        Route::post('/location-logs', [LocationLogController::class, 'store']);
 
         Route::post('/time-entries/clock-in', [TimeEntryController::class, 'clockIn']);
         Route::post('/time-entries/clock-out', [TimeEntryController::class, 'clockOut']);

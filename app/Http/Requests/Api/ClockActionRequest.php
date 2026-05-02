@@ -16,6 +16,7 @@ class ClockActionRequest extends FormRequest
         return [
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'accuracy' => ['nullable', 'numeric', 'min:0', 'max:50000'],
         ];
     }
 }
