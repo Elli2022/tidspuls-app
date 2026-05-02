@@ -20,6 +20,7 @@ class UpdateTimeEntryRequest extends FormRequest
             'clock_in_longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'clock_out_latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'clock_out_longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'note' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

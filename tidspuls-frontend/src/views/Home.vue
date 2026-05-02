@@ -16,7 +16,13 @@
                 <li v-for="entry in entries" :key="entry.id">
                     <div>
                         <strong>In:</strong> {{ formatDate(entry.clocked_in_at) }}<br />
-                        <strong>Ut:</strong> {{ entry.clocked_out_at ? formatDate(entry.clocked_out_at) : 'Pågående' }}
+                        <strong>Ut:</strong> {{ entry.clocked_out_at ? formatDate(entry.clocked_out_at) : 'Pågående' }}<br />
+                        <strong>GPS in:</strong> {{ formatGps(entry.clock_in_latitude, entry.clock_in_longitude) }}<br />
+                        <strong>GPS ut:</strong> {{ formatGps(entry.clock_out_latitude, entry.clock_out_longitude) }}
+                        <template v-if="entry.note">
+                            <br />
+                            <strong>Anteckning:</strong> {{ entry.note }}
+                        </template>
                     </div>
                     <div class="row-actions">
                         <button @click="startEdit(entry)">Redigera</button>
@@ -38,6 +44,14 @@
                     Ut
                     <input v-model="editClockedOutAt" type="datetime-local" />
                 </label>
+                <p v-if="editingEntry" class="gps-readonly">
+                    <strong>GPS in:</strong> {{ formatGps(editingEntry.clock_in_latitude, editingEntry.clock_in_longitude) }}<br />
+                    <strong>GPS ut:</strong> {{ formatGps(editingEntry.clock_out_latitude, editingEntry.clock_out_longitude) }}
+                </p>
+                <label>
+                    Anteckning (valfritt)
+                    <textarea v-model="editNote" rows="3" maxlength="1000" placeholder="T.ex. projekt, plats, uppdrag…"></textarea>
+                </label>
                 <button type="submit">Spara ändring</button>
                 <button type="button" @click="cancelEdit">Avbryt</button>
             </form>
@@ -53,6 +67,11 @@ type TimeEntry = {
     id: number;
     clocked_in_at: string;
     clocked_out_at: string | null;
+    clock_in_latitude: number | null;
+    clock_in_longitude: number | null;
+    clock_out_latitude: number | null;
+    clock_out_longitude: number | null;
+    note: string | null;
 };
 
 const entries = ref<TimeEntry[]>([]);
@@ -62,9 +81,18 @@ const errorMessage = ref('');
 const editingEntry = ref<TimeEntry | null>(null);
 const editClockedInAt = ref('');
 const editClockedOutAt = ref('');
+const editNote = ref('');
 
 const formatDate = (value: string) =>
     new Date(value).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
+
+const formatGps = (lat: number | null | undefined, lng: number | null | undefined) => {
+    if (lat == null || lng == null) {
+        return '—';
+    }
+
+    return `${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}`;
+};
 
 const dateTimeLocalValue = (value: string | null) => {
     if (!value) {
@@ -109,7 +137,10 @@ const clockIn = async () => {
         const coords = await withGps();
         await apiClient.post('/time-entries/clock-in', coords);
         await loadEntries();
-        message.value = 'Instämpling registrerad.';
+        message.value =
+            coords.latitude != null && coords.longitude != null
+                ? 'Instämpling registrerad med GPS.'
+                : 'Instämpling registrerad (ingen GPS — tillåt plats i webbläsaren om du vill spara koordinater).';
     } catch (error: unknown) {
         errorMessage.value = getApiErrorMessage(error, 'Kunde inte stampla in.');
     } finally {
@@ -126,7 +157,10 @@ const clockOut = async () => {
         const coords = await withGps();
         await apiClient.post('/time-entries/clock-out', coords);
         await loadEntries();
-        message.value = 'Utstämpling registrerad.';
+        message.value =
+            coords.latitude != null && coords.longitude != null
+                ? 'Utstämpling registrerad med GPS.'
+                : 'Utstämpling registrerad (ingen GPS — tillåt plats i webbläsaren om du vill spara koordinater).';
     } catch (error: unknown) {
         errorMessage.value = getApiErrorMessage(error, 'Kunde inte stampla ut.');
     } finally {
@@ -138,12 +172,14 @@ const startEdit = (entry: TimeEntry) => {
     editingEntry.value = entry;
     editClockedInAt.value = dateTimeLocalValue(entry.clocked_in_at);
     editClockedOutAt.value = dateTimeLocalValue(entry.clocked_out_at);
+    editNote.value = entry.note ?? '';
 };
 
 const cancelEdit = () => {
     editingEntry.value = null;
     editClockedInAt.value = '';
     editClockedOutAt.value = '';
+    editNote.value = '';
 };
 
 const saveEdit = async () => {
@@ -155,6 +191,7 @@ const saveEdit = async () => {
         await apiClient.put(`/time-entries/${editingEntry.value.id}`, {
             clocked_in_at: toIsoDate(editClockedInAt.value),
             clocked_out_at: editClockedOutAt.value ? toIsoDate(editClockedOutAt.value) : null,
+            note: editNote.value.trim() === '' ? null : editNote.value.trim(),
         });
         await loadEntries();
         cancelEdit();
@@ -217,6 +254,22 @@ onMounted(async () => {
 .form {
     display: grid;
     gap: 0.75rem;
+}
+
+.gps-readonly {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+textarea {
+    width: 100%;
+    min-height: 72px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    resize: vertical;
 }
 
 input,

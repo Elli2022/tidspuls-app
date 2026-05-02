@@ -15,6 +15,7 @@ class TimeEntry extends Model
         'clock_in_longitude',
         'clock_out_latitude',
         'clock_out_longitude',
+        'note',
     ];
 
     protected $casts = [
