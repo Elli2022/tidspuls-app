@@ -32,7 +32,7 @@ const login = async () => {
 
     try {
         const response = await apiClient.post('/login', {
-            personnummer: personnummer.value,
+            personnummer: personnummer.value.trim(),
             password: password.value,
             device_name: 'web-app',
         });

@@ -4,6 +4,13 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 
 ## [Unreleased]
 
+## [1.3.1] — 2026-05-06
+
+### Ändrat
+
+- Personnummer normaliseras konsekvent till formatet `ÅÅMMDD-XXXX` vid inloggning, registrering och när användaren sparas, så att inloggning fungerar även om man skriver med eller utan bindestreck / med fullt årtal.
+- Migration som uppdaterar befintliga `users.personnummer` till kanoniskt format (hoppar över vid dublettkonflikt).
+
 ## [1.3.0] — 2026-05-05
 
 ### Tillagt

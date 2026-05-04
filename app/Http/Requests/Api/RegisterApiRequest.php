@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api;
 
 use App\Models\User;
 use App\Rules\ValidPersonnummer;
+use App\Support\PersonnummerNormalizer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -12,6 +13,19 @@ class RegisterApiRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $raw = $this->input('personnummer');
+        if (! is_string($raw)) {
+            return;
+        }
+
+        $canonical = PersonnummerNormalizer::canonical($raw);
+        if ($canonical !== null) {
+            $this->merge(['personnummer' => $canonical]);
+        }
     }
 
     public function rules(): array

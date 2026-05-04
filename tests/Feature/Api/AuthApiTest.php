@@ -45,6 +45,23 @@ class AuthApiTest extends TestCase
             ->assertJsonPath('data.token_type', 'Bearer');
     }
 
+    public function test_login_accepts_personnummer_without_dash_matching_stored_canonical(): void
+    {
+        $user = User::factory()->create([
+            'personnummer' => '850709-9805',
+            'password' => 'password',
+        ]);
+
+        $response = $this->postJson('/api/v1/login', [
+            'personnummer' => '8507099805',
+            'password' => 'password',
+            'device_name' => 'test-suite',
+        ]);
+
+        $response->assertOk()->assertJsonPath('success', true);
+        $this->assertSame($user->id, $response->json('data.user.id'));
+    }
+
     public function test_logout_revokes_current_token(): void
     {
         $user = User::factory()->create();
