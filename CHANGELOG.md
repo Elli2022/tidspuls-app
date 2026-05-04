@@ -4,6 +4,21 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-05-05
+
+### Tillagt
+
+- **Attest av tid:** status på varje `time_entry`: `draft`, `submitted`, `approved`, `rejected`. Befintliga poster sätts vid migration till `approved` (historik).
+- API:
+  - `GET /api/v1/time-entries/pending-review` — lista kollegors poster som väntar attest (admin/chef, samma organisation).
+  - `POST /api/v1/time-entries/{id}/submit` — medarbetare skickar avslutad stämpling (`clock_out` krävs).
+  - `POST /api/v1/time-entries/{id}/approve` och `POST …/reject` (valfritt fält `reason`) — admin/chef; inte attestera sig själv.
+- Frontend: Hem visar attest-status och ”Skicka för attest”; sida `/attest` för chefslista med godkänn/avslå.
+
+### Ändrat
+
+- Redigering och borttagning av tidposter tillåts endast i `draft` eller `rejected` (inte för väntande eller godkända poster).
+
 ## [1.2.2] — 2026-05-04
 
 ### Säkerhet

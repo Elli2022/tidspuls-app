@@ -5,6 +5,7 @@ import Register from './views/Register.vue';
 import ChangePassword from './views/ChangePassword.vue';
 import Profile from './views/Profile.vue';
 import Platslogg from './views/Platslogg.vue';
+import Attest from './views/Attest.vue';
 import { getAuthToken } from './auth';
 
 const routes = [
@@ -13,6 +14,7 @@ const routes = [
     { path: '/register', component: Register, meta: { guestOnly: true } },
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
     { path: '/platslogg', component: Platslogg, meta: { requiresAuth: true } },
+    { path: '/attest', component: Attest, meta: { requiresAuth: true } },
     { path: '/change-password', component: ChangePassword, meta: { requiresAuth: true } },
 ];
 

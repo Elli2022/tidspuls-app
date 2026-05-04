@@ -5,6 +5,7 @@
             <nav class="actions">
                 <template v-if="isAuthenticated">
                     <router-link to="/">Hem</router-link>
+                    <router-link to="/attest">Attestering</router-link>
                     <router-link to="/platslogg">Platslogg</router-link>
                     <router-link to="/profile">Mina uppgifter</router-link>
                     <router-link to="/change-password">Byt lösenord</router-link>

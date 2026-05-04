@@ -29,6 +29,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/location-logs', [LocationLogController::class, 'index']);
         Route::post('/location-logs', [LocationLogController::class, 'store']);
 
+        Route::get('/time-entries/pending-review', [TimeEntryController::class, 'pendingReview']);
+        Route::post('/time-entries/{timeEntry}/submit', [TimeEntryController::class, 'submit']);
+        Route::post('/time-entries/{timeEntry}/approve', [TimeEntryController::class, 'approve']);
+        Route::post('/time-entries/{timeEntry}/reject', [TimeEntryController::class, 'reject']);
+
         Route::post('/time-entries/clock-in', [TimeEntryController::class, 'clockIn']);
         Route::post('/time-entries/clock-out', [TimeEntryController::class, 'clockOut']);
         Route::get('/time-entries', [TimeEntryController::class, 'index']);

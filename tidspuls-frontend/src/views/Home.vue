@@ -23,10 +23,34 @@
                             <br />
                             <strong>Anteckning:</strong> {{ entry.note }}
                         </template>
+                        <br />
+                        <strong>Status attest:</strong>
+                        <span :class="['badge', `badge-${entry.approval_status}`]">{{
+                            approvalLabel(entry.approval_status)
+                        }}</span>
+                        <template v-if="entry.approval_status === 'approved' && entry.approver">
+                            <br />
+                            <span class="meta attest-meta">
+                                Godkänd av {{ entry.approver.name
+                                }}{{ entry.approved_at ? ' · ' + formatDate(entry.approved_at) : '' }}
+                            </span>
+                        </template>
+                        <template v-if="entry.approval_status === 'rejected' && entry.rejection_reason">
+                            <br />
+                            <span class="reject-note">{{ entry.rejection_reason }}</span>
+                        </template>
                     </div>
                     <div class="row-actions">
-                        <button @click="startEdit(entry)">Redigera</button>
-                        <button @click="removeEntry(entry.id)">Ta bort</button>
+                        <button
+                            v-if="canSubmit(entry)"
+                            type="button"
+                            class="btn-accent"
+                            @click="submitForApproval(entry.id)"
+                        >
+                            Skicka för attest
+                        </button>
+                        <button :disabled="!canEdit(entry)" @click="startEdit(entry)">Redigera</button>
+                        <button :disabled="!canEdit(entry)" @click="removeEntry(entry.id)">Ta bort</button>
                     </div>
                 </li>
             </ul>
@@ -63,6 +87,8 @@
 import { onMounted, ref } from 'vue';
 import apiClient, { getApiErrorMessage } from '../axios';
 
+type ApprovalStatus = 'draft' | 'submitted' | 'approved' | 'rejected';
+
 type TimeEntry = {
     id: number;
     clocked_in_at: string;
@@ -72,6 +98,12 @@ type TimeEntry = {
     clock_out_latitude: number | null;
     clock_out_longitude: number | null;
     note: string | null;
+    approval_status: ApprovalStatus;
+    submitted_at: string | null;
+    approved_at: string | null;
+    approved_by: number | null;
+    rejection_reason: string | null;
+    approver?: { id: number; name: string } | null;
 };
 
 const entries = ref<TimeEntry[]>([]);
@@ -85,6 +117,27 @@ const editNote = ref('');
 
 const formatDate = (value: string) =>
     new Date(value).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
+
+const approvalLabel = (status: ApprovalStatus) => {
+    switch (status) {
+        case 'draft':
+            return 'Utkast';
+        case 'submitted':
+            return 'Väntar på attest';
+        case 'approved':
+            return 'Godkänd';
+        case 'rejected':
+            return 'Avslagen — åtgärda';
+        default:
+            return status;
+    }
+};
+
+const canEdit = (entry: TimeEntry) =>
+    entry.approval_status === 'draft' || entry.approval_status === 'rejected';
+
+const canSubmit = (entry: TimeEntry) =>
+    canEdit(entry) && entry.clocked_out_at != null;
 
 const formatGps = (lat: number | null | undefined, lng: number | null | undefined) => {
     if (lat == null || lng == null) {
@@ -214,6 +267,19 @@ const saveEdit = async () => {
     }
 };
 
+const submitForApproval = async (id: number) => {
+    errorMessage.value = '';
+    message.value = '';
+
+    try {
+        await apiClient.post(`/time-entries/${id}/submit`);
+        await loadEntries();
+        message.value = 'Stämpling skickad till chef för attest.';
+    } catch (error: unknown) {
+        errorMessage.value = getApiErrorMessage(error, 'Kunde inte skicka för attest.');
+    }
+};
+
 const removeEntry = async (id: number) => {
     try {
         await apiClient.delete(`/time-entries/${id}`);
@@ -305,6 +371,53 @@ button {
 
 .error {
     color: #bf1b1b;
+}
+
+.meta.attest-meta {
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+.reject-note {
+    display: inline-block;
+    margin-top: 0.25rem;
+    padding: 0.35rem 0.5rem;
+    background: #fff4f4;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #7f1d1d;
+}
+
+.badge {
+    margin-left: 0.35rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-draft {
+    background: #e9ecef;
+    color: #343a40;
+}
+
+.badge-submitted {
+    background: #fff8e6;
+    color: #856404;
+}
+
+.badge-approved {
+    background: #e7f6ed;
+    color: #136f34;
+}
+
+.badge-rejected {
+    background: #fde8e8;
+    color: #9b1c1c;
+}
+
+.btn-accent {
+    background: #2f6f9f !important;
 }
 
 @media (max-width: 640px) {
