@@ -53,9 +53,30 @@ function translateValidationMessage(message: string): string {
     return m;
 }
 
+function resolveApiBaseUrl(): string {
+    const raw = import.meta.env.VITE_API_BASE_URL;
+    const trimmed = typeof raw === 'string' ? raw.trim() : '';
+
+    if (trimmed !== '') {
+        return trimmed.replace(/\/+$/, '');
+    }
+
+    if (import.meta.env.DEV) {
+        return 'http://localhost:8001/api/v1';
+    }
+
+    // Production bundle should never ship without VITE_API_BASE_URL (see scripts/check-vite-api-url.mjs).
+    console.error(
+        '[tidspuls] VITE_API_BASE_URL saknas i byggd frontend — kontrollera Netlify environment variables och gör om deploy.'
+    );
+
+    return '';
+}
+
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8001/api/v1',
+    baseURL: resolveApiBaseUrl(),
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    timeout: 90_000,
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -73,9 +94,30 @@ export const getApiErrorMessage = (error: unknown, fallback: string): string => 
         return fallback;
     }
 
-    // No HTTP response: DNS failure, wrong VITE_API_BASE_URL, CORS block, or offline
+    // No HTTP response: DNS failure, wrong/missing VITE_API_BASE_URL, CORS block, offline, or timeout (Render cold start)
     if (!error.response && error.request) {
-        return 'Kunde inte ansluta till servern. Kontrollera nätverket och att frontend är byggd med rätt API-adress (VITE_API_BASE_URL).';
+        const code = error.code;
+        let hint = '';
+
+        if (code === 'ECONNABORTED') {
+            hint =
+                ' Begäran tog för lång tid — gratisplan på Render kan ha varit i viloläge; prova igen om en minut.';
+        } else if (code === 'ERR_NETWORK') {
+            hint =
+                ' Nätverket blockerade anropet (brandvägg, VPN, annonsblockering eller fel API-adress i den byggda sidan).';
+        }
+
+        const urlHint =
+            typeof apiClient.defaults.baseURL === 'string' && apiClient.defaults.baseURL.length > 0
+                ? ` Nuvarande API-bas i klienten: ${apiClient.defaults.baseURL}`
+                : ' API-bas i klienten är tom — på Netlify måste VITE_API_BASE_URL sättas vid bygget (tom variabel i UI åsidosätter netlify.toml).';
+
+        return (
+            'Kunde inte ansluta till API:t.' +
+            hint +
+            urlHint +
+            ' Redeploy frontend efter du ändrat miljövariabler.'
+        );
     }
 
     const payload = error.response?.data as Record<string, unknown> | undefined;

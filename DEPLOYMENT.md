@@ -27,6 +27,13 @@
 5. Set `VITE_API_BASE_URL=https://<render-url>/api/v1` in Netlify **or** rely on the URL committed in `netlify.toml` after removing any conflicting UI variable.
 6. Deploy (production builds fail fast if `VITE_API_BASE_URL` still contains `YOUR_RENDER_BACKEND_URL`).
 
+## Felsökning: «Kunde inte ansluta till API:t» (Netlify + Render)
+
+1. **Tom `VITE_API_BASE_URL` i Netlify:** Under *Site configuration → Environment variables*, om variabeln finns men värdet är tomt **åsidosätter den** värdet från `netlify.toml`. Ta bort variabeln helt eller sätt den till `https://<din-render-backend>/api/v1`, sedan **Trigger deploy** (ny build krävs — Vite bakar in URL vid bygget).
+2. **Fel backend-URL:** Bekräfta att Render-tjänsten svarar: öppna `https://<render-host>/api/v1/health` i webbläsaren (ska ge JSON med `"success": true`).
+3. **Render viloläge:** Första anrop efter paus kan ta lång tid; frontend väntar nu upp till 90 s. Prova «Logga in» igen efter en minut om det timeout:ar.
+4. **Nätverk:** VPN, företags-proxy eller annonsblockering kan blockera `*.onrender.com`.
+
 ## 3) Post-Deploy checks
 
 - Login with personnummer + password.

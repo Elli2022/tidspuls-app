@@ -4,6 +4,14 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 
 ## [Unreleased]
 
+## [1.3.2] — 2026-05-06
+
+### Ändrat
+
+- Frontend: striktare kontroll av `VITE_API_BASE_URL` vid build (tom Netlify-variabel kan inte längre passera tyst).
+- Axios: 90 s timeout (Render cold start), trimmad bas-URL och tydligare feltext vid nätverks-/timeoutfel (visar konfigurerad API-bas om den finns).
+- `DEPLOYMENT.md`: felsökningssteg för «kan inte ansluta till API».
+
 ## [1.3.1] — 2026-05-06
 
 ### Ändrat

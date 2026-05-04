@@ -5,7 +5,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  # Production API (override in Netlify Site settings → Environment variables per branch/context if needed)
+  # Production API. Viktigt: om du lägger VITE_API_BASE_URL i Netlify UI med *tomt värde* åsidosätts denna rad och bygget kan få fel URL.
   VITE_API_BASE_URL = "https://tidspuls-app.onrender.com/api/v1"
 
 [[redirects]]
