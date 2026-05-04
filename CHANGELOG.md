@@ -4,6 +4,12 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 
 ## [Unreleased]
 
+## [1.3.3] — 2026-05-06
+
+### Ändrat
+
+- API-inloggning slutar använda `Auth::attempt` med exakt `personnummer`-sträng; vi slår upp användare med flera lagrade format (t.ex. med/utan bindestreck, 12 siffror med århundrade, samt fallback som jämför sista 10 siffrorna om värdet i databasen har konstiga separatorer). Sedan verifieras lösenord med `Hash::check`.
+
 ## [1.3.2] — 2026-05-06
 
 ### Ändrat

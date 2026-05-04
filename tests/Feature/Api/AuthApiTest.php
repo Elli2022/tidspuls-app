@@ -2,8 +2,12 @@
 
 namespace Tests\Feature\Api;
 
+use App\Enums\UserRole;
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AuthApiTest extends TestCase
@@ -60,6 +64,54 @@ class AuthApiTest extends TestCase
 
         $response->assertOk()->assertJsonPath('success', true);
         $this->assertSame($user->id, $response->json('data.user.id'));
+    }
+
+    public function test_login_finds_user_when_database_has_compact_personnummer_without_mutator(): void
+    {
+        $organization = Organization::factory()->create();
+
+        DB::table('users')->insert([
+            'name' => 'Legacy PN user',
+            'email' => 'legacy.pn@test.invalid',
+            'personnummer' => '8507099805',
+            'password' => Hash::make('password'),
+            'organization_id' => $organization->id,
+            'role' => UserRole::Employee->value,
+            'email_verified_at' => now(),
+            'remember_token' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->postJson('/api/v1/login', [
+            'personnummer' => '850709-9805',
+            'password' => 'password',
+            'device_name' => 'test-suite',
+        ])->assertOk()->assertJsonPath('success', true);
+    }
+
+    public function test_login_finds_user_when_database_has_twelve_digit_personnummer(): void
+    {
+        $organization = Organization::factory()->create();
+
+        DB::table('users')->insert([
+            'name' => 'Legacy twelve-digit PN',
+            'email' => 'legacy.12digit@test.invalid',
+            'personnummer' => '198507099805',
+            'password' => Hash::make('password'),
+            'organization_id' => $organization->id,
+            'role' => UserRole::Employee->value,
+            'email_verified_at' => now(),
+            'remember_token' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->postJson('/api/v1/login', [
+            'personnummer' => '850709-9805',
+            'password' => 'password',
+            'device_name' => 'test-suite',
+        ])->assertOk()->assertJsonPath('success', true);
     }
 
     public function test_logout_revokes_current_token(): void
