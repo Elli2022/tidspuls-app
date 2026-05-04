@@ -46,6 +46,10 @@ Fullstack monorepo for a time-tracking demo project.
 - Backend static analysis: `vendor/bin/phpstan analyse`
 - Frontend build/typecheck: `cd tidspuls-frontend && npm run build`
 
+## Version history
+
+See `CHANGELOG.md`. Release-process (tags, GitHub Releases): `docs/VERSIONING.md`.
+
 ## Deployment
 
 See `DEPLOYMENT.md` for:

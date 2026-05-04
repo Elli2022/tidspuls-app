@@ -3,6 +3,11 @@
         <h2>Skapa konto</h2>
         <form class="form" @submit.prevent="register">
             <input v-model="name" type="text" placeholder="Namn" required />
+            <input
+                v-model="organizationName"
+                type="text"
+                placeholder="Organisationsnamn (valfritt — du blir administratör)"
+            />
             <input v-model="email" type="email" placeholder="E-post" required />
             <input v-model="personnummer" type="text" placeholder="Personnummer (YYMMDD-XXXX)" required />
             <p class="field-hint">Lösenord måste vara minst 8 tecken.</p>
@@ -24,6 +29,7 @@ import { ref } from 'vue';
 import apiClient, { getApiErrorMessage } from '../axios';
 
 const name = ref('');
+const organizationName = ref('');
 const email = ref('');
 const personnummer = ref('');
 const password = ref('');
@@ -39,6 +45,7 @@ const register = async () => {
 
     try {
         await apiClient.post('/register', {
+            organization_name: organizationName.value.trim() || undefined,
             name: name.value,
             email: email.value,
             personnummer: personnummer.value,

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\LocationLogController;
+use App\Http\Controllers\Api\OrganizationMemberController;
 use App\Http\Controllers\Api\TimeEntryController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -19,8 +20,9 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', fn () => response()->json([
             'success' => true,
-            'data' => ['user' => request()->user()],
+            'data' => ['user' => request()->user()->load('organization')],
         ]));
+        Route::get('/organization/members', [OrganizationMemberController::class, 'index']);
         Route::post('/logout', [AuthenticatedSessionController::class, 'apiLogout']);
         Route::post('/change-password', [UserController::class, 'changePassword']);
 
