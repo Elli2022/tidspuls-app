@@ -4,6 +4,13 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 
 ## [Unreleased]
 
+## [1.2.2] — 2026-05-04
+
+### Säkerhet
+
+- CI failar om versionsstyrd kod innehåller `APP_KEY=base64:` (förhindrar återfall).
+- Dokumentation: `docs/SECURITY.md` (rotation på Render, historik, GitGuardian).
+
 ## [1.2.1] — 2026-05-04
 
 ### Säkerhet

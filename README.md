@@ -50,6 +50,10 @@ Fullstack monorepo for a time-tracking demo project.
 
 See `CHANGELOG.md`. Release-process (tags, GitHub Releases): `docs/VERSIONING.md`.
 
+## Security
+
+See `docs/SECURITY.md` (APP_KEY, Render rotation, GitGuardian).
+
 ## Deployment
 
 See `DEPLOYMENT.md` for:

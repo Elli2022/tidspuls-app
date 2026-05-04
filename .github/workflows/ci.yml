@@ -15,6 +15,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Block committed Laravel APP_KEY secrets
+        run: |
+          set -euo pipefail
+          # Require material after base64: so docs mentioning APP_KEY=base64:… do not trip CI.
+          if grep -RIn \
+              --exclude-dir=vendor \
+              --exclude-dir=.git \
+              --exclude-dir=node_modules \
+              -E 'APP_KEY[[:space:]]*=[[:space:]]*base64:[A-Za-z0-9+/]{32,}=*' \
+              .; then
+            echo 'Committed APP_KEY with base64 value is not allowed (use Render env + tests/phpunit-bootstrap.php).'
+            exit 1
+          fi
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
