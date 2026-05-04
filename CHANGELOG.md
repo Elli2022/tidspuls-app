@@ -4,6 +4,16 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 
 ## [Unreleased]
 
+## [1.2.1] — 2026-05-04
+
+### Säkerhet
+
+- Tog bort `APP_KEY` från versionsstyrd `phpunit.xml`; tester använder istället en slumpad nyckel i `tests/phpunit-bootstrap.php` (inte committed).
+
+### Ändrat
+
+- PHPUnit-bootstrap dokumenteras för lokala körningar utan `.env`.
+
 ## [1.2.0] — 2026-05-02
 
 ### Tillagt
@@ -14,10 +24,6 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 - Befintliga användare vid migration tilldelas organisationen **Standardorganisation** som **employee**.
 - API: `GET /api/v1/organization/members` (admin eller chef ser kollegor i samma organisation).
 - `/api/v1/me` inkluderar nu även `organization`-relation.
-
-### Ändrat
-
-- `phpunit.xml`: fast test-`APP_KEY` så `php artisan test` fungerar utan lokal `.env`.
 
 ## [1.1.0] — 2026-05-01
 

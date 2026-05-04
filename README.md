@@ -41,7 +41,7 @@ Fullstack monorepo for a time-tracking demo project.
 
 ## Quality Checks
 
-- Backend tests: `php artisan test`
+- Backend tests: `php artisan test` — ingen `.env` krävs; `tests/phpunit-bootstrap.php` sätter en slumpad `APP_KEY` vid testkörning (ingen nyckel i git).
 - Backend format check: `vendor/bin/pint --test`
 - Backend static analysis: `vendor/bin/phpstan analyse`
 - Frontend build/typecheck: `cd tidspuls-frontend && npm run build`
