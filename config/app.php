@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | SPA frontend URL (password reset links in e-mail)
+    |--------------------------------------------------------------------------
+    |
+    | Netlify (eller annan statisk host) där Vue-appen körs. Används av
+    | återställningsmejl så att länken går till /reset-password i frontend.
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

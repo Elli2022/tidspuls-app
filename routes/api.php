@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\LocationLogController;
 use App\Http\Controllers\Api\OrganizationMemberController;
+use App\Http\Controllers\Api\PasswordResetApiController;
 use App\Http\Controllers\Api\TimeEntryController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -16,6 +17,11 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/login', [AuthenticatedSessionController::class, 'apiLogin']);
+
+    Route::post('/forgot-password', [PasswordResetApiController::class, 'forgot'])
+        ->middleware('throttle:6,1');
+    Route::post('/reset-password', [PasswordResetApiController::class, 'reset'])
+        ->middleware('throttle:12,1');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', fn () => response()->json([

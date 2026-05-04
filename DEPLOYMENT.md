@@ -82,6 +82,9 @@ Sätt dessa på webbtjänsten i nästa steg (Laravel):
 | `APP_DEBUG` | `false` |
 | `APP_URL` | `https://<din-web-service>.onrender.com` |
 | `APP_KEY` | Generera lokalt: `php artisan key:generate --show` och klistra in värdet |
+| `FRONTEND_URL` | **Obligatoriskt för glömt lösenord:** publika Netlify‑URL till SPA:t utan avslutande slash, t.ex. `https://tidspuls-xxxx.netlify.app`. Återställningsmejl länkar hit (`/reset-password`). |
+| `MAIL_MAILER`, `MAIL_HOST`, … | För riktiga mail behövs SMTP eller t.ex. Resend/Mailgun (`MAIL_MAILER=smtp` osv.). Lokalt räcker `MAIL_MAILER=log`. Utan fungerande mail når användaren ingen återställningslänk. |
+| `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME` | Avsändare som syns i inkorgen. |
 | `DB_*` | Enligt PostgreSQL‑instansen ovan |
 
 Lämna `SESSION_DRIVER`/`CACHE_STORE`/`QUEUE_CONNECTION` som i Laravel‑standard om migreringarna skapat nödvändiga tabeller (körs vid containerstart: `php artisan migrate --force` i `Dockerfile`).

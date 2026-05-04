@@ -95,6 +95,10 @@ export const getApiErrorMessage = (error: unknown, fallback: string): string => 
     }
 
     // No HTTP response: DNS failure, wrong/missing VITE_API_BASE_URL, CORS block, offline, or timeout (Render cold start)
+    if (error.response?.status === 429) {
+        return 'För många försök just nu. Vänta en liten stund och prova igen.';
+    }
+
     if (!error.response && error.request) {
         const code = error.code;
         let hint = '';
@@ -126,6 +130,18 @@ export const getApiErrorMessage = (error: unknown, fallback: string): string => 
 
     if (code === 'invalid_credentials') {
         return 'Fel personnummer eller lösenord. Om du inte har konto än, välj «Skapa konto» i menyn.';
+    }
+
+    if (code === 'password_reset_throttled') {
+        return 'Du har bett om för många återställningslänkar. Vänta en stund innan du försöker igen.';
+    }
+
+    if (code === 'invalid_reset_token') {
+        return 'Länken är ogiltig eller har gått ut. Begär en ny återställningslänk på inloggningssidan.';
+    }
+
+    if (code === 'password_reset_failed') {
+        return 'Kunde inte återställa lösenordet. Kontrollera uppgifterna eller begär en ny länk.';
     }
 
     if (code === 'validation_failed') {

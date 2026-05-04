@@ -1,6 +1,11 @@
 <template>
     <section class="card">
         <h2>Byt lösenord</h2>
+        <p class="intro">
+            Här byter du lösenord när du redan är inloggad. Om du är utelåst, logga ut och använd
+            <router-link to="/forgot-password">Glömt lösenord</router-link>
+            på inloggningssidan.
+        </p>
         <form class="form" @submit.prevent="changePassword">
             <input v-model="currentPassword" type="password" placeholder="Nuvarande lösenord" required />
             <input v-model="newPassword" type="password" placeholder="Nytt lösenord" required />
@@ -51,6 +56,17 @@ const changePassword = async () => {
     background: #fff;
     border-radius: 12px;
     padding: 1rem;
+}
+
+.intro {
+    font-size: 0.9rem;
+    color: #495057;
+    margin: 0 0 0.75rem;
+}
+
+.intro a {
+    color: #1c3d5a;
+    font-weight: 600;
 }
 
 .form {

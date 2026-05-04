@@ -7,6 +7,9 @@
             <button :disabled="loading" type="submit">{{ loading ? 'Loggar in...' : 'Logga in' }}</button>
         </form>
         <p class="hint">
+            <router-link to="/forgot-password">Glömt lösenord?</router-link>
+        </p>
+        <p class="hint">
             Har du inget konto?
             <router-link to="/register">Skapa konto</router-link>
         </p>

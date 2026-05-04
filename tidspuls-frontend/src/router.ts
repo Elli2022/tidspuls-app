@@ -3,6 +3,8 @@ import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import ChangePassword from './views/ChangePassword.vue';
+import ForgotPassword from './views/ForgotPassword.vue';
+import ResetPassword from './views/ResetPassword.vue';
 import Profile from './views/Profile.vue';
 import Platslogg from './views/Platslogg.vue';
 import Attest from './views/Attest.vue';
@@ -11,6 +13,8 @@ import { getAuthToken } from './auth';
 const routes = [
     { path: '/', component: Home, meta: { requiresAuth: true } },
     { path: '/login', component: Login, meta: { guestOnly: true } },
+    { path: '/forgot-password', component: ForgotPassword, meta: { guestOnly: true } },
+    { path: '/reset-password', component: ResetPassword, meta: { guestOnly: true } },
     { path: '/register', component: Register, meta: { guestOnly: true } },
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
     { path: '/platslogg', component: Platslogg, meta: { requiresAuth: true } },

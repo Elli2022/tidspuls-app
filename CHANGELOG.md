@@ -4,6 +4,18 @@ Format inspirerat av [Keep a Changelog](https://keepachangelog.com/sv/1.1.0/), v
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-05-06
+
+### Tillagt
+
+- API och Vue för **glömt lösenord**: `POST /api/v1/forgot-password` (e-post), `POST /api/v1/reset-password` (token + nytt lösenord).
+- Sidor `/forgot-password` och `/reset-password`; länk från inloggning samt förklaring på «Byt lösenord» om man är utelåst.
+- `FRONTEND_URL` i konfiguration (`config/app.php`): återställningslänkar i mejl pekar på SPA (`…/reset-password?token=…&email=…`).
+
+### Ändrat
+
+- `AppServiceProvider` sätter `ResetPassword::createUrlUsing` till frontend‑URL.
+
 ## [1.3.3] — 2026-05-06
 
 ### Ändrat
